@@ -6,6 +6,7 @@ from echo_model_handler import EchoModelHandler
 from shakespeare_sonnet_handler import ShakespeareSonnetHandler
 from default_handler import DefaultHandler
 from shakespeare_sonnet_handler import ShakespeareSonnetHandler
+from nonsense_poem_handler import NonsensePoemHandler
 import uuid
 
 from typing import Optional, List
@@ -21,6 +22,7 @@ COMPLETION_HANDLERS = {
         'mock-gpt-model': EchoModelHandler,
         'time-of-day': TimeOfDayHandler,
         'sonnets': ShakespeareSonnetHandler,
+        'nonsense': NonsensePoemHandler,
 }
 
 # data models

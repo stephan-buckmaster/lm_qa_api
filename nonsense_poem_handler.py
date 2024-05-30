@@ -3,18 +3,18 @@ from parse_paragraphs import parse_paragraphs
 import re
 import random
 
-SONNETS = parse_paragraphs('sonnets.txt')
+NONSENSE_POEMS = parse_paragraphs('nonsense.txt')
 
 def extract_integer(text):
   match = re.search(r"\d+", text)  # Find one or more digits
   return int(match.group()) if match else None
 
-class ShakespeareSonnetHandler(BaseHandler):
+class NonsensePoemHandler(BaseHandler):
 	def complete(self):
 		if self.request.messages:
 			if self.request.messages[-1]:
 				x = extract_integer(self.request.messages[-1].content)
 				if x:
-					return '\n\n'.join([random.choice(SONNETS) for n in range(x)])
+					return '\n\n'.join([random.choice(NONSENSE_POEMS) for n in range(x)])
 
-		return random.choice(SONNETS)
+		return random.choice(NONSENSE_POEMS)
