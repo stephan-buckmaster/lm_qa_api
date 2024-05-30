@@ -1,6 +1,10 @@
 import asyncio
 import json
 import time
+import base_handler
+from time_of_day_handler import TimeOfDayHandler
+from echo_model_handler import EchoModelHandler
+from default_handler import DefaultHandler
 
 from typing import Optional, List
 
@@ -11,28 +15,8 @@ from fastapi import FastAPI, HTTPException, Request
 
 app = FastAPI(title="OpenAI-compatible API")
 
-class BaseHandler:
-    def __init__(self, request):
-        self.request = request
-
-    def model(self):
-        return self.request.model
-
-class SimpleMockHandler(BaseHandler):
-    def complete(self):
-            return "We are only echoing your model as " + self.model() + ";  and that's just about it"
-
-
-class TimeOfDayHandler(BaseHandler):
-    def complete(self):
-            return "For all we know the current time is " + time.strftime('%a %b %d %H:%M:%S %Z %Y')
-
-class DefaultHandler(BaseHandler):
-    def complete(self):
-            return "Unkown model " + self.model
-
 COMPLETION_HANDLERS = {
-        'mock-gpt-model': SimpleMockHandler,
+        'mock-gpt-model': EchoModelHandler,
         'time-of-day': TimeOfDayHandler,
 }
 
@@ -51,14 +35,6 @@ class ChatCompletionRequest(BaseModel):
     def complete(self):
         handler = COMPLETION_HANDLERS.get(self.model, DefaultHandler)
         return handler(self).complete()
-
-    def wascomplete(self):
-        if self.model == 'mock-gpt-model':
-            return "We are only echoing your model as " + self.model + ";  and that's just about it"
-        elif self.model == 'time-of-day':
-            return "For all we know the current time is " + time.strftime('%a %b %d %H:%M:%S %Z %Y')
-        else:
-            return "Unkown model"
 
 async def _resp_async_generator(text_resp: str, request: ChatCompletionRequest):
     # let's pretend every word is a token and return it over time
