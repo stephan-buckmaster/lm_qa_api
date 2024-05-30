@@ -1,10 +1,12 @@
 import asyncio
 import json
 import time
-import base_handler
 from time_of_day_handler import TimeOfDayHandler
 from echo_model_handler import EchoModelHandler
+from shakespeare_sonnet_handler import ShakespeareSonnetHandler
 from default_handler import DefaultHandler
+from shakespeare_sonnet_handler import ShakespeareSonnetHandler
+import uuid
 
 from typing import Optional, List
 
@@ -18,6 +20,7 @@ app = FastAPI(title="OpenAI-compatible API")
 COMPLETION_HANDLERS = {
         'mock-gpt-model': EchoModelHandler,
         'time-of-day': TimeOfDayHandler,
+        'sonnets': ShakespeareSonnetHandler,
 }
 
 # data models
@@ -42,7 +45,7 @@ async def _resp_async_generator(text_resp: str, request: ChatCompletionRequest):
 
     for i, token in enumerate(tokens):
         chunk = {
-            "id": i,
+            "id":  str(uuid.uuid4()),
             "object": "chat.completion.chunk",
             "created": time.time(),
             "model": request.model,
@@ -62,7 +65,7 @@ async def chat_completions(request: ChatCompletionRequest):
         )
 
     return {
-        "id": "1337",
+        "id": str(uuid.uuid4()),
         "object": "chat.completion",
         "created": time.time(),
         "model": request.model,
